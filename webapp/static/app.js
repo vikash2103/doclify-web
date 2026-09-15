@@ -58,7 +58,7 @@ function showResult(readmeContent) {
 
 async function pollJob(jobId) {
   try {
-    const res = await fetch(`/api/jobs/${jobId}`);
+    const res = await fetch(`api/jobs/${jobId}`);
     if (!res.ok) {
       showError(`Lost track of this job (HTTP ${res.status}).`);
       return;
@@ -88,7 +88,7 @@ form.addEventListener("submit", async (event) => {
   showProgress("queued", "");
 
   try {
-    const res = await fetch("/api/submit", {
+    const res = await fetch("api/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ repo_url: repoUrl, groq_api_key: groqApiKey }),
