@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doclify Web</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Doclify Web</h1>
+    <p class="subtitle">Generate an AI-written README for any public GitHub repo, powered by the
+      <a href="https://github.com/KalyanM45/Doclify" target="_blank" rel="noopener">Doclify</a> CLI.</p>
+
+    <form id="submit-form">
+      <label for="repo_url">GitHub repo URL</label>
+      <input type="text" id="repo_url" name="repo_url" placeholder="https://github.com/owner/repo" required>
+
+      <label for="groq_api_key">Groq API key</label>
+      <input type="password" id="groq_api_key" name="groq_api_key" placeholder="gsk_..." required>
+      <p class="hint">
+        Never stored — used only in memory for this run, then discarded.
+        Need a free key? Get one at
+        <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a>.
+      </p>
+
+      <button type="submit" id="submit-btn">Generate README</button>
+    </form>
+
+    <section id="progress" hidden>
+      <div class="spinner"></div>
+      <p id="stage-text">Queued…</p>
+    </section>
+
+    <section id="error" hidden>
+      <p class="error-box"><strong>Error:</strong> <span id="error-text"></span></p>
+    </section>
+
+    <section id="result" hidden>
+      <div class="result-header">
+        <h2>Generated README</h2>
+        <button id="download-btn">Download README.md</button>
+      </div>
+      <article id="readme-render" class="markdown-body"></article>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
