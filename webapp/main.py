@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
@@ -10,7 +11,35 @@ from webapp import jobs
 
 BASE_DIR = Path(__file__).resolve().parent
 
+
+class PrefixMiddleware:
+    """
+    Strips a URL prefix (e.g. "/repodocs") from incoming requests before
+    Starlette's routing sees them, for deployments where the reverse proxy
+    forwards the full path unchanged rather than stripping it itself. Set via
+    the APP_ROOT_PATH env var; a no-op when it's unset (e.g. local dev).
+
+    Deliberately does not set scope["root_path"] — this app's templates use
+    plain relative paths rather than url_for(), and setting root_path here
+    breaks Starlette's StaticFiles mount routing (confirmed: identical
+    already-stripped scope["path"], 200 with root_path unset, 404 with it set).
+    """
+
+    def __init__(self, app, prefix: str):
+        self.app = app
+        self.prefix = prefix.rstrip("/")
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http" and self.prefix and scope["path"].startswith(self.prefix):
+            scope["path"] = scope["path"][len(self.prefix):] or "/"
+        await self.app(scope, receive, send)
+
+
 app = FastAPI(title="RepoDocs")
+
+root_path = os.environ.get("APP_ROOT_PATH", "").rstrip("/")
+if root_path:
+    app.add_middleware(PrefixMiddleware, prefix=root_path)
 
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
