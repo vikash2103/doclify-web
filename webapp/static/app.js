@@ -14,7 +14,7 @@ const downloadBtn = document.getElementById("download-btn");
 const STAGE_LABELS = {
   queued: "Queued…",
   cloning: "Cloning repository…",
-  initializing: "Scanning repository (doclify init)…",
+  initializing: "Scanning repository (repodocs init)…",
   summarizing: "Summarizing files with the LLM…",
   generating: "Finalizing README…",
 };
